@@ -33,9 +33,9 @@ public class Init {
             throw new IllegalArgumentException("Ошибка при чтении файла конфигурации " + propsPath, ex);
         }
         driverType = DriverType.valueOf(properties.getProperty(PARAM_DRIVER, DEFAULT_DRIVER).toUpperCase());
-        commonImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.common.secs", "10"));
-        loadPageImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.load.page.secs", "10"));
-        scriptImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.scripts.secs", "10"));
+        commonImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.common.secs", "30"));
+        loadPageImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.load.page.secs", "30"));
+        scriptImplicityTimeoutSecs = Long.parseLong(properties.getProperty("timeout.implicity.scripts.secs", "30"));
     }
 
     private Init() {
