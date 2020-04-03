@@ -45,9 +45,29 @@
             <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
+    <profiles>
+        <profile>
+            <id>parallel</id>
+            <activation>
+                <property>
+                    <name>threads.per.cpu.count</name>
+                </property>
+            </activation>
+            <properties>
+                <parallel>all</parallel>
+                <!--
+                all – runs suites, classes as well as methods in separate threads
+                methods – runs test methods in separate threads
+                classes – runs test classes in separate threads
+                classesAndMethods – runs classes and methods in separate threads
+                suites – runs suites in parallel
+                suitesAndClasses – runs suites and classes in separate threads
+                suitesAndMethods – creates separate threads for classes and for methods
+                -->
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -66,6 +86,15 @@
                 <version>3.0.0-M3</version>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <parallel>${parallel}</parallel>
+                    <threadCount>${threads.per.cpu.count}</threadCount>
+                    <!--
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <threadCountSuites>1</threadCountSuites>
+                    <threadCountClasses>2</threadCountClasses>
+                    <threadCountMethods>3</threadCountMethods>
+                    -->
                 </configuration>
             </plugin>
         </plugins>
