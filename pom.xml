@@ -10,11 +10,13 @@
     <packaging>jar</packaging>
 
     <properties>
-        <cucumber.version>5.5.0</cucumber.version>
+        <cucumber.version>4.8.1</cucumber.version>
         <junit.version>4.13</junit.version>
         <selenium.version>3.141.59</selenium.version>
+        <allure.cucumberjvm4.version>2.13.2</allure.cucumberjvm4.version>
+        <aspectj.version>1.8.10</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+        <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -46,8 +48,34 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber4-jvm</artifactId>
+            <version>${allure.cucumberjvm4.version}</version>
+        </dependency>
     </dependencies>
-
+    <profiles>
+        <profile>
+            <id>parallel</id>
+            <activation>
+                <property>
+                    <name>threads.per.cpu.count</name>
+                </property>
+            </activation>
+            <properties>
+                <parallel>all</parallel>
+                <!--
+                all – runs suites, classes as well as methods in separate threads
+                methods – runs test methods in separate threads
+                classes – runs test classes in separate threads
+                classesAndMethods – runs classes and methods in separate threads
+                suites – runs suites in parallel
+                suitesAndClasses – runs suites and classes in separate threads
+                suitesAndMethods – creates separate threads for classes and for methods
+                -->
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -59,6 +87,33 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        -Dallure.results.directory="target/allure-results"
+                    </argLine>
+                    <parallel>${parallel}</parallel>
+                    <threadCount>${threads.per.cpu.count}</threadCount>
+                    <!--
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <threadCountSuites>1</threadCountSuites>
+                    <threadCountClasses>2</threadCountClasses>
+                    <threadCountMethods>3</threadCountMethods>
+                    -->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
